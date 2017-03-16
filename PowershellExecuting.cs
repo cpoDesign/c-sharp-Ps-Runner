@@ -1,6 +1,14 @@
+/*
+In order to get following using we can use new package 
+
+using System.Management.Automation;
+Install-Package System.Management.Automation
+*/
+
 using System;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
+
 
 namespace PowershellExecuting
 {
