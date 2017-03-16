@@ -2,7 +2,12 @@
 In order to get following using we can use new package 
 
 using System.Management.Automation;
+you have 2 choises
+
 Install-Package System.Management.Automation
+or
+C:\windows\assembly\GAC_MSIL\System.Management.Automation\1.0.0.0__31bf3856ad364e35\System.Management.Automation.dll
+
 */
 
 using System;
