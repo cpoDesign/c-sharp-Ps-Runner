@@ -5,10 +5,50 @@ namespace PowershellExecuting
 {
     class Program
     {
-        static void Main(string[] args)
+         static void Main(string[] args)
+        {
+            RunInlineScript();
+
+            Console.WriteLine("====================");
+            string path = @"c:\PowerShell\Full.ps1";
+            ExecutePsFile(path);
+
+            Console.ReadKey();
+        }
+
+        private static void ExecutePsFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("Sorry file does not exists");
+                Console.ReadKey();
+                return;
+            }
+
+            // Open the file to read from.
+            var shell = PowerShell.Create();
+            shell.AddCommand(path);
+
+            var helper2 = new PowerShellHelper(shell);
+            try
+            {
+                helper2.ExecuteAsynchronously(new TimeSpan(1, 10, 0));
+            }
+            catch (Exception x)
+            {
+                Console.WriteLine(x);
+            }
+
+            foreach (var item in helper2.GetOutput())
+            {
+                Console.WriteLine(item);
+            }
+        }
+
+        private static void RunInlineScript()
         {
             // session configuration information may be found: https://technet.microsoft.com/library/hh847817.aspx
-            string script = "Write-Host \"Testing lopping...\"" + Environment.NewLine
+            var script = "Write-Host \"Testing lopping...\"" + Environment.NewLine
                            + "for ($i=1; $i -le 5; $i++)" + Environment.NewLine
                            + "{" + Environment.NewLine
                            + "Write-Output $i" + Environment.NewLine
@@ -16,24 +56,16 @@ namespace PowershellExecuting
                            + "write-error 'some error $i';" + Environment.NewLine
                            + "}" + Environment.NewLine
                            + "Write-Host \"Done!\"" + Environment.NewLine;
-
             Console.Write(script);
 
-            Console.WriteLine();
-            Console.WriteLine("====================");
-            PowerShell shell = PowerShell.Create();
+            var shell = PowerShell.Create();
             shell.AddScript(script);
 
-            PowerShellHelper helper = new PowerShellHelper(shell);
+            var helper = new PowerShellHelper(shell);
             try
             {
-                // the script above should take 15 seconds to execute
 
-                //// do timeout of 10 minutes
                 helper.ExecuteAsynchronously(new TimeSpan(0, 10, 0));
-
-                // do a really short timeout - 2 seconds - testing for timeout
-                //helper.ExecuteAsynchronously(new TimeSpan(0, 0, 2));
             }
             catch (TimeoutException te)
             {
@@ -46,9 +78,7 @@ namespace PowershellExecuting
             {
                 Console.WriteLine(item);
             }
-    
 
-            //new PowerShellExecutor().ExecuteSynchronouslyNamespaceTest();
             Console.WriteLine("press any key to close");
             Console.ReadKey();
         }
