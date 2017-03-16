@@ -17,7 +17,7 @@ using System.Management.Automation;
 
 namespace PowershellExecuting
 {
-    public class PowerShellHelper
+     public class PowerShellHelper
     {
         private PowerShell _shell;
         private Collection<string> _collection;
@@ -28,7 +28,7 @@ namespace PowershellExecuting
             _collection = new Collection<string>();
         }
 
-        public Collection<String> GetOutput()
+        public Collection<string> GetOutput()
         {
             return _collection;
         }
@@ -37,8 +37,7 @@ namespace PowershellExecuting
         {
             _shell.InvocationStateChanged += delegate (object sender, PSInvocationStateChangedEventArgs e)
             {
-                //// Console.WriteLine(e.InvocationStateInfo.State);
-                RecordSystemAudit( e.InvocationStateInfo.State.ToString());
+                RecordSystemAudit(e.InvocationStateInfo.State.ToString());
             };
 
             // prepare a new collection to store output stream objects
@@ -51,10 +50,8 @@ namespace PowershellExecuting
 
             result.AsyncWaitHandle.WaitOne(timeout);
 
-            //Console.WriteLine("Execution has stopped. The pipeline state: " + shell_.InvocationStateInfo.State);
             foreach (PSObject outputItem in outputCollection)
             {
-                //TODO: handle/process the output items if required
                 if (outputItem != null)
                 {
                     Console.WriteLine(outputItem.BaseObject.ToString());
@@ -74,13 +71,7 @@ namespace PowershellExecuting
             foreach (PSObject result in results)
             {
                 RecordAudit(result.ToString());
-                //if (result.BaseObject is int)
-                //{
-                //    // Do something in the database
-                //}
             }
-            // do something when an object is written to the output stream
-            //Console.WriteLine("Object added to output.");
         }
 
         private void RecordSystemAudit(string message)
